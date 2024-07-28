@@ -33,9 +33,40 @@ async function fetchPersonalDetails(req, res) {
   } 
 } 
  
+async function fetchAllPersonalDetails(req, res) { 
+  try { 
+    const details = await PersonalDetails.getAllPersonalDetails(); 
+    if (details) { 
+      res.json(details); 
+    } else { 
+      res.status(404).json({ message: "Personal details not found." }); 
+    } 
+  } catch (err) { 
+    console.error("Error fetching personal details:", err.message); 
+    res.status(500).json({ message: "Error fetching personal details: " + err.message }); 
+  } 
+} 
+
+async function handleDeletePatient(req, res) { 
+  try { 
+    const id = req.params.id;
+    const details = await PersonalDetails.deletePatient(id);
+    if (details) { 
+      res.status(204).json(details); 
+    } else { 
+      res.status(404).json({ message: "Personal details not found." }); 
+    } 
+  } catch (err) { 
+    console.error("Error deleting personal details:", err.message); 
+    res.status(500).json({ message: "Error delete personal details: " + err.message }); 
+  } 
+} 
+
 module.exports = { 
+  fetchAllPersonalDetails,
   addPersonalDetails, 
-  fetchPersonalDetails 
+  fetchPersonalDetails,
+  handleDeletePatient
 };
 
 

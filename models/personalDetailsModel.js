@@ -54,6 +54,40 @@ class PersonalDetails {
       throw err; 
     } 
   } 
+
+  static async deletePatient(patientId) {
+    try {
+      const connection = await sql.connect(dbConfig); 
+      const sqlQuery = "DELETE FROM PersonalDetails WHERE id = @id"; 
+      const request = connection.request(); 
+      request.input("id", sql.Int, patientId); 
+      const result = await request.query(sqlQuery); 
+      connection.close();
+
+      return result;
+    } catch (error) {
+        console.error('SQL error:', error);
+        throw error;
+    }
+}
+
+  static async getAllPersonalDetails() { 
+    try { 
+      const connection = await sql.connect(dbConfig); 
+      const sqlQuery = "SELECT * FROM PersonalDetails"; 
+      const request = connection.request(); 
+      const result = await request.query(sqlQuery); 
+      connection.close(); 
+ 
+      if (result.recordset.length > 0) { 
+        return result.recordset;
+      } 
+      return null; 
+    } catch (err) { 
+      console.error("Error getting all personal details", err); 
+      throw err; 
+    } 
+  } 
  
   static async createPersonalDetails(details) { 
     try { 

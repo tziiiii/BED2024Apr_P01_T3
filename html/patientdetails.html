@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <title>ZehaoHealthcare</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #delete{
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-container">
+            <img src="../Images/Logo.png" alt="Logo" class="logo"/>
+            <a href="userpage.html" class="company-name">Zehao Healthcare</a>
+        </div>
+   
+        <nav class="navbar">
+            <a href="../html/userdonation.html">Donate</a>
+            <a href="../html/aboutus.html">About Us</a>
+            <a href="../html/contactus.html">Contact Us</a>
+            <div class="user-info">
+                <span id="username"></span>
+                <img src="../Images/dropdownarrow.png" alt="dropdownarrow" class="dropdown-arrow" onclick="toggleDropdown()"/>
+                <div id="dropdown-menu" class="dropdown-content">
+                    <a href="../html/updatepersonal.html">Patient Details</a>
+                    <a href="../index.html">Sign Out</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+ 
+    <div class="personal-container">
+        <div class="personal-box">
+            <h1>Update Personal Details</h1>
+            <form id="personal-details-form">
+                <div>
+                    <label for="first-name">First Name:</label>
+                    <p id="firstName"></p>
+                </div>
+                <div>
+                    <label for="last-name">Last Name:</label>
+                    <p id="lastName"></p>
+                </div>
+                <div>
+                    <label for="full-name">Full Name:</label>
+                    <p id="fullName"></p>
+                </div>
+               
+                <div>
+                    <label for="gender">Gender:</label>
+                    <p id="gender"></p>
+                    
+                </div>
+ 
+                <div>
+                    <label for="government-id">Government ID:</label>
+                    <p id="governmentId"></p>
+                </div>
+                <div>
+                    <label for="dob">Date of Birth:</label>
+                    <p id="dob"></p>
+                </div>
+                <div>
+                    <label for="nationality">Nationality:</label>
+                    <p id ="nationality"></p>
+                </div>
+                <div>
+                    <label for="residence">Country of Residence:</label>
+                    <p id ="residence"></p>
+                </div>
+                <div>
+                    <label for="phone">Phone Number:</label>
+                    <ip id ="phone"></ip>
+                </div>
+                <div>
+                    <label for="email">Email:</label>
+                    <p id="email"></p>
+                </div>
+                <div class="full-width">
+                    <label for="address">Address:</label>
+                    <p id ="address"></p>
+                </div>
+                <div class="full-width">
+                    <label for="medicalCondition">Pre-Existing Medical Condition:</label>
+                    <p id ="medicalCondition"></p>
+                </div>
+                <div class="full-width">
+                    <label for="allergies">Drug Allergies:</label>
+                    <p id ="allergies"></p>
+                </div>
+                <div class="buttons">
+                    <button id="delete" type="button">Delete Patient</button>
+                </div>
+            </form>
+        </div>
+    </div>
+ 
+    <footer class="footer">
+        <div class="footer-container">
+            <p>Copyright © 2024 by Zehao Healthcare Pte Ltd. All Rights Reserved.</p>
+        </div>
+    </footer>
+ 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userName = localStorage.getItem('userName');
+            if (userName) {
+                document.getElementById('username').textContent = userName;
+            }
+        });
+ 
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown-menu');
+            if (dropdown.style.display === "block") {
+                dropdown.style.display = "none";
+            } else {
+                dropdown.style.display = "block";
+            }
+        }
+        
+        function fetchPatientDetailsById(id) {
+            fetch(`http://localhost:3003/personal-details/${id}`)
+                .then(response => response.json())
+                .then(detail => {
+                    if (detail) {
+                        displayDetail(detail);
+                    }
+                })
+                .catch(error => console.error('Error fetching appointments:', error));
+        }
+
+        function displayDetail(detail) {
+            const firstName = document.getElementById('firstName');
+            firstName.innerHTML = detail.firstName;
+            const lastName = document.getElementById('lastName');
+            lastName.innerHTML = detail.lastName;
+            const fullName = document.getElementById('fullName');
+            fullName.innerHTML = detail.fullName;
+            const gender = document.getElementById('gender');
+            gender.innerHTML = detail.gender;
+            const governmentId = document.getElementById('governmentId');
+            governmentId.innerHTML = detail.governmentId;
+            const dob = document.getElementById('dob');
+            dob.innerHTML = detail.dob;
+            const nationality = document.getElementById('nationality');
+            nationality.innerHTML = detail.nationality;
+            const residence = document.getElementById('residence');
+            residence.innerHTML = detail.residence;
+            const phone = document.getElementById('phone');
+            phone.innerHTML = detail.phone;
+            const email = document.getElementById('email');
+            email.innerHTML = detail.email;
+            const address = document.getElementById('address');
+            address.innerHTML = detail.address;
+            const medicalCondition = document.getElementById('medicalCondition');
+            medicalCondition.innerHTML = detail.medicalCondition;
+            const allergies = document.getElementById('allergies');
+            allergies.innerHTML = detail.allergies;
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropdown-arrow')) {
+                const dropdowns = document.getElementsByClassName("dropdown-content");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    let openDropdown = dropdowns[i];
+                    if (openDropdown.style.display === "block") {
+                        openDropdown.style.display = "none";
+                    }
+                }
+            }
+        }
+ 
+        async function deletePatient(id) { 
+            fetch(`http://localhost:3003/personal-details/${id}`, {method: 'DELETE'})
+            .then(patient => {
+                if (patient.status == 204) {
+                    console.log('Successfully deleted the patient.');
+                    window.location.href = 'http://localhost:5500/html/patientlookup.html';
+                } else {
+                    console.log('Unexpected response status:', patient.status);
+                }
+            })
+            .catch(error => console.error('Error deleting patient:', error));
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        window.onload = fetchPatientDetailsById(id);
+
+        document.getElementById('personal-details-form').addEventListener('click', function(event) {
+            event.preventDefault();
+            deletePatient(id);
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+

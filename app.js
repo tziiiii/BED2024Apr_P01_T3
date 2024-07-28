@@ -6,7 +6,7 @@ const { signup } = require("./controllers/usersController");
 const { doctorLogin } = require("./controllers/doctorlogincontroller");
 const { login } = require('./controllers/loginController');
 const { adminLogin } = require('./controllers/adminController');
-const { addPersonalDetails, fetchPersonalDetails } = require('./controllers/personalDetailController');
+const { addPersonalDetails, fetchPersonalDetails, fetchAllPersonalDetails, handleDeletePatient } = require('./controllers/personalDetailController');
 const { createTimeslot,addNewTimeslot } = require('./controllers/timeslotController');
 const { getTimeslots, updateTimeslotStatus } = require('./controllers/doctorhomepagecontroller'); // (zehao - )
 const { handleDeleteAppointment, handleUpdateAppointment, getUserAppointment } = require('./controllers/userAppointmentController');
@@ -40,6 +40,8 @@ app.post("/doctor/login", doctorLogin);
 app.post("/admin/login", adminLogin);
 app.post('/personal-details', addPersonalDetails);
 app.get('/personal-details/:id', fetchPersonalDetails);
+app.get('/personal-details/', fetchAllPersonalDetails);
+app.delete('/personal-details/:id', handleDeletePatient);
 app.post('/new-timeslot', createTimeslot);
 app.get('/get-timeslots', getTimeslots);
 app.delete('/delete-appointment/:id', handleDeleteAppointment);

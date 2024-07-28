@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/doctorhomepage.css">
+    <title>Zehao Healthcare</title>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-container">
+            <img src="../Images/Logo.png" alt="Logo" class="logo" />
+            <a href="patientlookup.html" class="company-name">Zehao Healthcare</a>
+        </div>
+
+        <nav class="navbar">
+            <a href="../html/doctormedicalreport.html">Medical Report</a>
+            <a href="../html/aboutus.html">About Us</a>
+            <a href="../html/contactus.html">Contact Us</a>
+            <a href="../html/login.html" class="logout-button">Log Out</a>
+        </nav>
+    </header>
+
+    <div class="appointment-rectangle">
+        Patient Details
+    </div>
+
+    <div class="search-bar-container">
+        <input type="text" class="search-bar" placeholder="Search for patient" id="searchBar">
+    </div>
+
+    <div class="patient-list-container">
+        <div class="patient-list-header">
+            <span class="header-number">#</span>
+            <span class="header-patient">Patient</span>
+            <span class="header-date">NRIC</span>
+            
+        </div>
+        <div id="appointment-container">
+            
+        </div>
+    </div>
+
+    <script>
+        let timeslots = [];
+
+async function fetchAllPatientDetails() {
+    try {
+        const response = await fetch('http://localhost:3003/personal-details');
+        if (!response.ok) {
+            throw new Error('Failed to fetch timeslots');
+        }
+        details = await response.json();
+        displayDetails(details);
+    } catch (error) {
+        console.error('Error fetching details:', error);
+    }
+}
+
+function displayDetails(details) {
+    const detailsContainer = document.getElementById('appointment-container');
+    
+    // Clear existing content
+    detailsContainer.innerHTML = '';
+
+    details.forEach((detail, index) => {
+        const detailRow = document.createElement('div');
+        detailRow.classList.add('patient-list-row');
+        
+        detailRow.innerHTML = `
+            <span class="row-id">${detail.id}</span>
+            <span class="row-fullname">${detail.fullName}</span>
+            <span class="row-governmentid">${detail.governmentId}</span>
+        `;
+        
+        // Add click event listener to each timeslotRow
+        detailRow.addEventListener('click', () => {
+            // Navigate to appointment details page with username and appointmentId as query parameters
+            window.location.href = `patientdetails.html?id=${detail.id}`;
+        });
+    
+        detailsContainer.appendChild(detailRow);
+    });
+}
+
+window.onload = fetchAllPatientDetails;
+    </script>
+</body>
+</html>
